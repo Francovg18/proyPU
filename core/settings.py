@@ -5,7 +5,9 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# variables de entorno
+# -------------------------------
+# Variables de entorno
+# -------------------------------
 SECRET_KEY = config('SECRET_KEY', default='secret')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
@@ -16,6 +18,9 @@ RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
+# -------------------------------
+# Apps instaladas
+# -------------------------------
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -30,6 +35,9 @@ INSTALLED_APPS = [
     'apps.recursoConsumo',
 ]
 
+# -------------------------------
+# Middleware
+# -------------------------------
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -42,8 +50,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# -------------------------------
+# URLs y WSGI
+# -------------------------------
 ROOT_URLCONF = 'core.urls'
 
+WSGI_APPLICATION = 'core.wsgi.application'
+
+# -------------------------------
+# Templates
+# -------------------------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -59,9 +75,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'core.wsgi.application'
-
+# -------------------------------
 # Base de datos
+# -------------------------------
 DATABASES = {
     'default': dj_database_url.config(
         default=config('DATABASE_URL', default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
@@ -70,7 +86,9 @@ DATABASES = {
     )
 }
 
+# -------------------------------
 # Validación de contraseñas
+# -------------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -78,38 +96,50 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# Configuración internacional
+# -------------------------------
+# Internacionalización
+# -------------------------------
 LANGUAGE_CODE = 'es'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# -------------------------------
 # Static files
+# -------------------------------
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # ⚡ siempre definido
 
+# Whitenoise solo en producción
 if not DEBUG:
-    STATIC_ROOT = BASE_DIR / 'staticfiles'
-    # Whitenoise con compress y manifest
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    # Evitar confirmación interactiva en collectstatic
-    os.environ["DJANGO_COLLECTSTATIC"] = "1"
 
+# -------------------------------
+# Auto field
+# -------------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# -------------------------------
 # CORS
+# -------------------------------
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://PROYECTef.vercel.app"
 ]
 
-# DRF y documentación
+# -------------------------------
+# Django REST Framework
+# -------------------------------
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+# -------------------------------
+# DRF Spectacular
+# -------------------------------
 SPECTACULAR_SETTINGS = {
     'TITLE': 'DjangoRF API',
-    'DESCRIPTION': 'documentacion del proyecto',
+    'DESCRIPTION': 'Documentación del proyecto',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
